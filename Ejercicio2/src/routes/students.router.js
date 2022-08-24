@@ -6,7 +6,7 @@ const {
   orderByDate,
   updateStudent,
   addScoreStudent,
-  mathScoreMax,
+  mathScoreStudent,
 } = require('../controllers/students.controller');
 const router = Router();
 
@@ -16,7 +16,7 @@ router.get('/', allStudents);
 
 router.get('/order', orderByDate);
 
-router.get('/math', mathScoreMax);
+router.get('/math', mathScoreStudent);
 
 router.put('/update', updateStudent);
 

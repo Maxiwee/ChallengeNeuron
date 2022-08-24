@@ -205,19 +205,23 @@ module.exports = {
     }
   },
 
-  mathScoreMax: async (req, res) => {
-    const scoreStudent = await Score.find().populate('student');
+  mathScoreStudent: async (req, res) => {
+    const scoreStudent = await Score.find()
+      .populate('student')
+      .sort({ mathematics: -1 });
 
     let mathScoreMax = { mathematics: 0 };
+    let studentMaxScore = [];
 
     scoreStudent.forEach(x => {
       console.log(x.mathematics + ' ||' + mathScoreMax);
 
-      if (Number(x.mathematics) > Number(mathScoreMax.mathematics)) {
+      if (Number(x.mathematics) >= Number(mathScoreMax.mathematics)) {
         mathScoreMax = x;
+        studentMaxScore.push(x);
       }
     });
 
-    res.send(mathScoreMax);
+    res.send(studentMaxScore);
   },
 };
