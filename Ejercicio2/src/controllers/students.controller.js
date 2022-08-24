@@ -32,7 +32,7 @@ module.exports = {
         const students = await Student.find({});
 
         if (!students[0])
-          return res.status(401).json({ msg: 'The list has no students' });
+          return res.status(400).json({ error: 'The list has no students' });
 
         res.status(200).json(students);
       } catch (error) {
@@ -60,7 +60,7 @@ module.exports = {
 
     try {
       const student = await Student.findOne({ _id: id });
-      if (!student) return res.status(401).json({ msg: 'Student not found' });
+      if (!student) return res.status(400).json({ error: 'Student not found' });
       res.status(200).json(student);
     } catch (error) {
       console.log(error);
@@ -81,7 +81,7 @@ module.exports = {
       }
 
       if (!orderStudent[0]) {
-        return res.status(401).json({ msg: 'The list has no students' });
+        return res.status(400).json({ msg: 'The list has no students' });
       }
 
       res.status(200).json(orderStudent);
@@ -106,7 +106,7 @@ module.exports = {
 
     if (!id)
       return res
-        .status(401)
+        .status(400)
         .json({ error: 'There is no reference to update the student (ID)' });
 
     if (
@@ -119,7 +119,7 @@ module.exports = {
       !mathematics &&
       !history
     ) {
-      return res.status(401).json({
+      return res.status(400).json({
         error: 'Please send the data to update',
       });
     }
@@ -128,13 +128,13 @@ module.exports = {
       if (name || lastname || dateOfBirth || group) {
         const student = await Student.findOneAndUpdate({ _id: id }, req.body);
         if (!student) {
-          return res.status(401).json({ error: 'The student does not exist' });
+          return res.status(400).json({ error: 'The student does not exist' });
         }
       }
       if (english || spanish || mathematics || history) {
         const student = await Score.findOneAndUpdate({ student: id }, req.body);
         if (!student) {
-          return res.status(401).json({ error: 'The student does not exist' });
+          return res.status(400).json({ error: 'The student does not exist' });
         }
       }
 
@@ -146,7 +146,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       return res
-        .status(401)
+        .status(500)
         .json({ error: 'The student ID is incorrect, it does not exist.' });
     }
   },
@@ -157,12 +157,12 @@ module.exports = {
 
     if (!id) {
       return res
-        .status(401)
+        .status(400)
         .json({ error: 'There is no reference to update the student (ID)' });
     }
 
     if (!english && !spanish && !mathematics && !history) {
-      return res.status(401).json({
+      return res.status(400).json({
         error:
           'Please the scores of any of the subjects (english, epanish, mathematics or history)',
       });
@@ -181,7 +181,7 @@ module.exports = {
 
       const studentfound = await Score.findOne({ student: id });
       if (studentfound)
-        return res.status(401).json({
+        return res.status(400).json({
           error: 'The student already has scores, update',
           student: studentfound,
         });
@@ -206,22 +206,26 @@ module.exports = {
   },
 
   mathScoreStudent: async (req, res) => {
-    const scoreStudent = await Score.find()
-      .populate('student')
-      .sort({ mathematics: -1 });
+    try {
+      const scoreStudent = await Score.find()
+        .populate('student')
+        .sort({ mathematics: -1 });
 
-    let mathScoreMax = { mathematics: 0 };
-    let studentMaxScore = [];
+      let mathScoreMax = { mathematics: 0 };
+      let studentMaxScore = [];
 
-    scoreStudent.forEach(x => {
-      console.log(x.mathematics + ' ||' + mathScoreMax);
+      scoreStudent.forEach(x => {
+        console.log(x.mathematics + ' ||' + mathScoreMax);
 
-      if (Number(x.mathematics) >= Number(mathScoreMax.mathematics)) {
-        mathScoreMax = x;
-        studentMaxScore.push(x);
-      }
-    });
+        if (Number(x.mathematics) >= Number(mathScoreMax.mathematics)) {
+          mathScoreMax = x;
+          studentMaxScore.push(x);
+        }
+      });
 
-    res.send(studentMaxScore);
+      res.status(200).json(studentMaxScore);
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
