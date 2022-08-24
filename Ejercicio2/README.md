@@ -20,7 +20,7 @@ GET - http://localhost:3001/students
 
     Obtener todos los estudiantes
 
-GET - http://localhost:3001/students/{grupo}
+GET - http://localhost:3001/students?group={grupo}
 
     Obtener todos los estudiantes pertenecientes a un grupo,
 

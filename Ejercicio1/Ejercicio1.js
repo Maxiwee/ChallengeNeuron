@@ -6,16 +6,12 @@ function countRepeatedNumber(arr) {
   }
 
   arr.forEach(x => {
-    if (numbersRepeated.length === 0) {
-      numbersRepeated.push({ number: x, count: 1 });
-    } else {
-      const find = numbersRepeated.find(y => x === y.number);
+    const find = numbersRepeated.find(y => x === y.number);
 
-      if (find) {
-        ++find.count;
-      } else {
-        numbersRepeated.push({ number: x, count: 1 });
-      }
+    if (find) {
+      ++find.count;
+    } else {
+      numbersRepeated.push({ number: x, count: 1 });
     }
   });
 
@@ -35,7 +31,7 @@ function countRepeatedNumber(arr) {
   };
 }
 
-const response = countRepeatedNumber();
+const response = countRepeatedNumber([1, 3, 4, 5, 3, 7, 1, 2, 1]);
 
 console.log(response);
 

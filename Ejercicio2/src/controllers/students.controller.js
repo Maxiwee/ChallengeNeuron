@@ -40,12 +40,14 @@ module.exports = {
         res.status(500).json({ error: 'The list has no students' });
       }
     } else {
-      if (group !== 'A' && group !== 'B' && group !== 'C') {
+      const groupSelect = group.toUpperCase();
+
+      if (groupSelect !== 'A' && groupSelect !== 'B' && groupSelect !== 'C') {
         return res.status(400).send({ error: 'Please send a valid group ' });
       }
 
       try {
-        const studentsgroup = await Student.find({ group: group });
+        const studentsgroup = await Student.find({ group: groupSelect });
         res.json(studentsgroup);
       } catch (error) {
         console.log(error);
@@ -118,16 +120,22 @@ module.exports = {
       !history
     ) {
       return res.status(401).json({
-        msg: 'Please send your score ',
+        error: 'Please send the data to update',
       });
     }
 
     try {
       if (name || lastname || dateOfBirth || group) {
-        await Student.findOneAndUpdate({ _id: id }, req.body);
+        const student = await Student.findOneAndUpdate({ _id: id }, req.body);
+        if (!student) {
+          return res.status(401).json({ error: 'The student does not exist' });
+        }
       }
       if (english || spanish || mathematics || history) {
-        await Score.findOneAndUpdate({ student: id }, req.body);
+        const student = await Score.findOneAndUpdate({ student: id }, req.body);
+        if (!student) {
+          return res.status(401).json({ error: 'The student does not exist' });
+        }
       }
 
       const studentUpdate = await Score.findOne({ student: id }).populate(
@@ -168,6 +176,8 @@ module.exports = {
 
     try {
       const student = await Student.findById({ _id: id });
+
+      console.log(student);
 
       const studentfound = await Score.findOne({ student: id });
       if (studentfound)
