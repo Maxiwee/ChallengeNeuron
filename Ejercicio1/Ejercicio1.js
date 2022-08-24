@@ -18,12 +18,14 @@ function countRepeatedNumber(arr) {
   let numMaxCount = 0;
   let num = [];
 
-  numbersRepeated.forEach(x => {
-    if (x.count >= numMaxCount) {
-      numMaxCount = x.count;
-      num.push(x.number);
-    }
-  });
+  numbersRepeated
+    .sort((a, b) => b.count - a.count)
+    .forEach(x => {
+      if (x.count >= numMaxCount) {
+        numMaxCount = x.count;
+        num.push(x.number);
+      }
+    });
 
   return {
     'Arreglo de incidencias': numbersRepeated,
@@ -31,7 +33,7 @@ function countRepeatedNumber(arr) {
   };
 }
 
-const response = countRepeatedNumber([1, 3, 4, 5, 3, 7, 1, 2, 1]);
+const response = countRepeatedNumber([8, 8, 3, 1, 3, 4, 5, 3, 7, 1, 2, 1]);
 
 console.log(response);
 
